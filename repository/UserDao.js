@@ -13,5 +13,5 @@ exports.createUser = async (user) => {
 }
 
 exports.updateUser = async(id) => {
-    const updatedUser = await db.query('UPDATE ')
+    const updatedUser = await db.query('UPDATE ') 
 }
