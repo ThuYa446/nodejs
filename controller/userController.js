@@ -1,11 +1,16 @@
 const userService = require("../service/UserService")
 const User = require("../model/User")
+const Response = require("../dto/Response");
+const ResponseData = require("../dto/Response");
+
 exports.getAllUsers = async (req,resp) => {
     try{
         const user = await userService.getAllUsers();
-        resp.json(user);
+        responseData = new ResponseData(200,'Fetch Successfully',user);
+        resp.json(responseData);
     }catch(error){
-        resp.status(500).json({ error: error.message });
+        responseData = new ResponseData(500,'Internal Server Error',error.message)
+        resp.json(responseData);
     }
 }
 
@@ -13,7 +18,8 @@ exports.findById = async (req,resp) => {
     try{
         const {id} = req.params;
         const user = await userService.findById(id);
-        resp.json(user);
+        responseData = new ResponseData(200,'Fetch Successfully',user);
+        resp.json(responseData);
     }catch(error){
         resp.status(500).json({ error: error.message });
     }
@@ -21,10 +27,9 @@ exports.findById = async (req,resp) => {
 
 exports.createUser = async (req,resp) => {
     try{
-        const {id,name,username,password,nrc,email,phno,user_type,dob,gender,address} = req.body;
-        user = new User(id,name,username,password,nrc,email,phno,user_type,dob,gender,address);
+        user = new User(req.body);
         const newUser = await userService.createUser(user);
-        resp.status(201).json(newUser);
+        resp.status(200).json(newUser);
     }catch (error) {
         resp.status(500).json({ error: error.message });
     }
@@ -35,6 +40,7 @@ exports.updateUser = async (req,resp) => {
         const {id} = req.params;
         const user = userService.findById(id);
         user.name = req.body.name;
+        console.log(user);
         await userService.updateUser(user,id);
         resp.json({
             code :200,
